@@ -232,32 +232,184 @@
         }
       }
     },
-    "/agent-users": {
+    "/software": {
       "get": {
-        "tags": ["Users"],
-        "summary": "Get all Agent users",
-        "description": "Retrieves a list of all agent user data.",
+        "tags": ["Software"],
+        "summary": "Get all software",
+        "description": "Retrieves a list of all software entries",
         "produces": ["application/json"],
-        "security": [
+        "responses": {
+          "200": {
+            "description": "A list of software entries",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Software"
+              }
+            },
+            "examples": {
+              "application/json": [
+                {
+                  "name": "Medical Imaging Software",
+                  "details": "Advanced imaging analysis tool",
+                  "version": "2.1.0",
+                  "medicalUseCases": "Radiology and many more",
+                  "contactPerson": "John Smith",
+                  "emailAddress": "john.smith@medical.com",
+                  "createdAt": "2023-06-15T10:00:00Z",
+                  "updatedAt": "2023-06-15T10:00:00Z"
+                }
+              ]
+            }
+          },
+          "500": {
+            "description": "Error fetching software data"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Software"],
+        "summary": "Create new software",
+        "description": "Creates a new software entry",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
           {
-            "Bearer": []
+            "in": "body",
+            "name": "software",
+            "description": "Software object to be created",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Software"
+            },
+            "examples": {
+              "application/json": {
+                "name": "Patient Management System",
+                "details": "Comprehensive patient record management",
+                "version": "1.0.0",
+                "medicalUseCases": ["Primary Care", "Hospital Management"],
+                "contactPerson": "Jane Doe",
+                "emailAddress": "jane.doe@medical.com"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Software created successfully",
+            "schema": {
+              "$ref": "#/definitions/Software"
+            },
+            "examples": {
+              "application/json": {
+                "name": "Patient Management System",
+                "details": "Comprehensive patient record management",
+                "version": "1.0.0",
+                "medicalUseCases": ["Primary Care", "Hospital Management"],
+                "contactPerson": "Jane Doe",
+                "emailAddress": "jane.doe@medical.com",
+                "createdAt": "2023-06-15T10:00:00Z",
+                "updatedAt": "2023-06-15T10:00:00Z"
+              }
+            }
+          },
+          "400": {
+            "description": "Error creating software entry"
+          }
+        }
+      }
+    },
+    "/software/{id}": {
+      "get": {
+        "tags": ["Software"],
+        "summary": "Get software by ID",
+        "description": "Retrieves a single software entry by ID",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of software to retrieve",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "A list of users.",
+            "description": "Software entry found",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/User"
-              }
+              "$ref": "#/definitions/Software"
             }
           },
-          "401": {
-            "description": "Unauthorized"
+          "404": {
+            "description": "Software not found"
           },
-          "403": {
-            "description": "Forbidden"
+          "500": {
+            "description": "Error fetching software data"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Software"],
+        "summary": "Update software",
+        "description": "Updates an existing software entry",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of software to update",
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "software",
+            "description": "Updated software object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Software"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Software updated successfully",
+            "schema": {
+              "$ref": "#/definitions/Software"
+            }
+          },
+          "404": {
+            "description": "Software not found"
+          },
+          "500": {
+            "description": "Error updating software"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Software"],
+        "summary": "Delete software",
+        "description": "Deletes a software entry",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of software to delete",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Software deleted successfully"
+          },
+          "404": {
+            "description": "Software not found"
+          },
+          "500": {
+            "description": "Error deleting software"
           }
         }
       }
@@ -281,9 +433,6 @@
           "type": "string"
         },
         "password": {
-          "type": "string"
-        },
-        "userType": {
           "type": "string"
         }
       }
@@ -382,6 +531,40 @@
           "example": "13/06/1996"
         }
       }
+    },
+    "Software": {
+      "type": "object",
+      "required": ["name", "details", "version", "medicalUseCases", "contactPerson", "emailAddress"],
+      "properties": {
+      "_id": {
+        "type": "string",
+        "example": "6601e50217fc70b39ecc269c"
+      },
+      "name": {
+        "type": "string",
+        "example": "Medical Imaging Software"
+      },
+      "details": {
+        "type": "string",
+        "example": "Advanced imaging analysis tool"
+      },
+      "version": {
+        "type": "string",
+        "example": "2.1.0"
+      },
+      "medicalUseCases": {
+        "type": "string",
+        "example": "Radiology and many more"
+      },
+      "contactPerson": {
+        "type": "string",
+        "example": "John Smith"
+      },
+      "emailAddress": {
+        "type": "string",
+        "example": "john.smith@medical.com"
+      }
     }
+  }
   }
 }

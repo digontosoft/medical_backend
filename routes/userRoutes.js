@@ -1,28 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const { protect, isShipper, isCarrier } = require("../middleware/auth");
-const {
-  Login,
-  Registration,
-  getAllUsers,
-  getUserById,
-  updateUser,
-  deleteUser,
-  getAllAgentUsers,
-  forgotPassword,
-  resetPassword,
-} = require("../controllers/auth");
 const { 
   getUsers, 
-  createUser 
+  registerUser,
+  loginUser,
+  getUserById,
+  updateUser,
+  deleteUser
 } = require('../controllers/userController');
 
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
 // Routes
-router.route('/')
+router.route('/users')
   .get(getUsers)
-  .post(createUser);
 
-router.route('/:id')
+router.route('/user/:id')
+  .get(getUserById)
   .put(updateUser)
   .delete(deleteUser);
 

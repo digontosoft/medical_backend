@@ -1,5 +1,6 @@
 const User = require('../models/userModel');
 const asyncHandler = require('express-async-handler'); // Assuming you use this for error handling
+const jwt = require('jsonwebtoken');
 
 // @desc    Get all users
 // @route   GET /api/users
@@ -108,10 +109,81 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    Register a new user
+// @route   POST /api/users/register
+// @access  Public
+const registerUser = asyncHandler(async (req, res) => {
+  const { firstName, lastName, email, phoneNumber, password, userType } = req.body;
+
+  const userExists = await User.findOne({ email });
+
+  if (userExists) {
+    res.status(400);
+    throw new Error('User already exists');
+  }
+
+  const user = await User.create({
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    userType: userType || 'user' // Default to regular user if not specified
+  });
+
+  if (user) {
+    res.status(201).json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      userType: user.userType,
+      token: generateToken(user._id)
+    });
+  } else {
+    res.status(400);
+    throw new Error('Invalid user data');
+  }
+});
+
+// @desc    Auth user & get token
+// @route   POST /api/users/login
+// @access  Public
+const loginUser = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+
+  const user = await User.findOne({ email });
+
+  if (user && (await user.matchPassword(password))) {
+    res.json({
+      _id: user._id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      userType: user.userType,
+      token: generateToken(user._id)
+    });
+  } else {
+    res.status(401);
+    throw new Error('Invalid email or password');
+  }
+});
+
+// Generate JWT
+const generateToken = (id) => {
+  return jwt.sign({ id }, "secret", {
+    expiresIn: '30d',
+  });
+};
+
 module.exports = {
   getUsers,
   getUserById,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  registerUser,
+  loginUser
 }; 

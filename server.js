@@ -29,8 +29,6 @@ app.use(express.json());
 
 app.use(routes);
 app.use("/api/v1", routes);
-app.use('/api/users', userRoutes);
-
 app.get("/", function (req, res) {
   res.send("Backend is running successfully....");
 });
