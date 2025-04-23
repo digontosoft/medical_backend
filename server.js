@@ -19,7 +19,7 @@ const io = init(server); // Initialize Socket.IO
 
 app.use(cors());
 swaggerDocument.host =
-  process.env.API_HOST || "https://medical-backend-fm3i.onrender.com";
+  process.env.API_HOST || "medical-backend-fm3i.onrender.com";
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
