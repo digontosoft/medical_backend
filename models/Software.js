@@ -25,6 +25,15 @@ const softwareSchema = new mongoose.Schema({
     trim: true,
     match: [/.+\@.+\..+/, 'Please fill a valid email address']
   },
+  status: {
+    type: String,
+    enum: ['pending', 'approved',"reject"],
+    default: 'pending'
+  },
+  repository_url: {
+    type: String,
+    trim: true
+  },
   createdAt: {
     type: Date,
     default: Date.now

@@ -563,6 +563,10 @@
       "emailAddress": {
         "type": "string",
         "example": "john.smith@medical.com"
+      },
+      "repository_url": {
+        "type": "string",
+        "example": "https://github.com/medical/software"
       }
     }
   }
